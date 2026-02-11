@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Para Leoneila 💖</title>
     <style>
+        /* Estilos base (se mantienen iguales) */
         * { box-sizing: border-box; }
         body {
             margin: 0;
@@ -124,12 +125,33 @@
     let currentScale = 1;
 
     const handleNo = (e) => {
-        const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40);
-        const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40);
-        noBtn.style.position = "fixed";
-        noBtn.style.left = `${x}px`;
-        noBtn.style.top = `${y}px`;
+        // Obtenemos la posición y tamaño del botón SÍ para evitarlo
+        const yesRect = yesBtn.getBoundingClientRect();
+        
+        let newX, newY;
+        let isOverlapping = true;
 
+        // Intentamos generar una posición hasta que no choque con el botón SÍ
+        // Añadimos un margen de 100px para que no se topen
+        while (isOverlapping) {
+            newX = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40);
+            newY = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40);
+
+            const padding = 100; 
+            const horizontalCheck = newX + noBtn.offsetWidth + padding < yesRect.left || newX > yesRect.right + padding;
+            const verticalCheck = newY + noBtn.offsetHeight + padding < yesRect.top || newY > yesRect.bottom + padding;
+
+            if (horizontalCheck || verticalCheck) {
+                isOverlapping = false;
+            }
+        }
+
+        noBtn.style.position = "fixed";
+        noBtn.style.left = `${newX}px`;
+        noBtn.style.top = `${newY}px`;
+        noBtn.style.zIndex = "999";
+
+        // Agrandar SÍ
         currentScale += 0.4;
         yesBtn.style.transform = `scale(${currentScale})`;
     };
